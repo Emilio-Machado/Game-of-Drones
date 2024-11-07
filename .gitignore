@@ -52,4 +52,5 @@ obj/
 *.user
 .vs/
 Logs/
+appsettings.Development.json
 

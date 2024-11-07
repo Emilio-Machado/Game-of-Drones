@@ -75,13 +75,6 @@ namespace Game_of_Drones.DataAccess
                 .WithMany()
                 .HasForeignKey(g => g.WinnerId)
                 .OnDelete(DeleteBehavior.Restrict); // Evita eliminación en cascada de jugadores
-
-            // Inserta movimientos con KillMoveId
-            modelBuilder.Entity<Move>().HasData(
-                new Move { Id = 1, Name = "Piedra", DateCreated = DateTime.Now, IsActive = true },
-                new Move { Id = 2, Name = "Papel", DateCreated = DateTime.Now, IsActive = true },
-                new Move { Id = 3, Name = "Tijera", DateCreated = DateTime.Now, IsActive = true }
-            );
         }
     }
 }

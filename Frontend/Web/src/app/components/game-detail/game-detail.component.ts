@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GameService } from '../../services/game.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +18,8 @@ export class GameDetail implements OnInit {
   gameData: any = null;
   selectedMove: any = null;
 
-  constructor(private globalService: GlobalService, private gameService: GameService, private toastr: ToastrService, private router: Router) { }
+  constructor(private globalService: GlobalService, private gameService: GameService,
+    private toastr: ToastrService, private router: Router, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.loadGameDetails(false);
@@ -28,7 +29,7 @@ export class GameDetail implements OnInit {
     this.gameService.getGameDetails().subscribe({
       next: (response) => {
         this.gameData = response.data;
-
+        this.cdr.detectChanges();
         const nextTurnPlayer = this.gameData.rounds[this.gameData.rounds.length - 1]?.nextTurnPlayer;
 
         if (nextTurnPlayer && showTurn) {
