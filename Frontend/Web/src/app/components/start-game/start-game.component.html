@@ -1,0 +1,12 @@
+<div class="game-form">
+  <h2>Ingrese los nombres de los jugadores</h2>
+  <form (ngSubmit)="startGame()">
+    <div class="input-group">
+      <input id="player1" type="text" [(ngModel)]="playerOneName" name="playerOneName" placeholder="Nombre del Jugador 1" />
+    </div>
+    <div class="input-group">
+      <input id="player2" type="text" [(ngModel)]="playerTwoName" name="playerTwoName" placeholder="Nombre del Jugador 2" />
+    </div>
+    <button type="submit" class="submit-btn hover-grow">Comenzar</button>
+  </form>
+</div>

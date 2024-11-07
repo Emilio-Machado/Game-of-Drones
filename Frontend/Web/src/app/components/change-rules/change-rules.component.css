@@ -1,0 +1,154 @@
+:host{
+    width: 100%;
+}
+#new-kills{
+  width: 100%;
+}
+
+#title-rules-game {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.rules-container {
+  background-color: #f9f9f9;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.rule-items-container {
+  height: 30vh;
+  
+  overflow-y: scroll;
+  padding-right: 20px;
+}
+
+.rule-items-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rule-items-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.rule-items-container::-webkit-scrollbar-thumb {
+  background-color: lightgray;
+  border-radius: 10px;
+}
+
+.rule-items-container::-webkit-scrollbar-thumb:hover {
+  background-color: #78a838;
+}
+
+.rule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.move-name {
+  font-weight: bold;
+  color: #333;
+  width: 100px;
+}
+
+select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.add-btn {
+  padding: 0.5rem 1rem;
+  background-color: #92c149;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-btn:hover {
+  background-color: #78a838;
+}
+
+.delete-btn {
+  padding: 0.5rem 1rem;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.new-move-form {
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.add-block {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-column {
+  width: 45%;
+}
+
+.add-column input{
+  width: 100%;
+}
+
+.add-btn-container {
+  width: 100%;
+  margin-top: 10px;
+}
+.add-btn-container .add-btn {
+  width: 100%;
+  text-align: center;
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+h4 {
+  margin: 0px 0px 1rem 0px;
+}
+
+p {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 1.5rem;
+}
+
+label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 600px) {
+  .rules-container{
+      width: auto;
+  }
+}

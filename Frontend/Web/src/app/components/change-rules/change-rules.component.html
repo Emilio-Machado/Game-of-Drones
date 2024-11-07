@@ -1,0 +1,36 @@
+<div class="rules-container">
+  <h4 id="title-rules-game">Reglas de Juego</h4>
+  <div class="rule-items-container">
+    <div *ngFor="let move of moves" class="rule-item">
+      <p class="move-name">{{ move.name }}</p>
+
+      <label for="kills">Mata a:</label>
+      <select [(ngModel)]="move.killMoveId" [attr.id]="'kills_' + move.id" (change)="updateMove(move)">
+        <option *ngFor="let option of getMoveOptions(move)" [value]="option.id">{{ option.name }}</option>
+      </select>
+
+      <button class="delete-btn" (click)="removeMove(move.id)">Eliminar</button>
+    </div>
+  </div>
+
+  <!-- Formulario para agregar un nuevo movimiento -->
+  <div class="new-move-form">
+    <h4>Agregar nuevo Movimiento</h4>
+
+    <div class="add-block">
+      <div class="add-column">
+        <input [(ngModel)]="newMoveName" type="text" placeholder="Nombre del Movimiento" />
+      </div>
+      <div class="add-column">
+        <select [(ngModel)]="newMoveKills" id="new-kills">
+          <option value="" disabled selected>Mata a:</option>
+          <option *ngFor="let option of moves" [value]="option.id">{{ option.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="add-btn-container">
+      <button class="add-btn" (click)="addMove()">Agregar Movimiento</button>
+    </div>
+  </div>
+</div>

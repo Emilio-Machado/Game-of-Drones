@@ -1,0 +1,160 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+  color: #666666;
+  padding-top: 2rem;
+}
+
+header {
+  width: 100%;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  background: linear-gradient(to right, #92c149, #416d00);
+  color: white;
+  left: 0;
+  z-index: 10;
+  padding: 1rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+}
+
+/* Efecto de los drones */
+.side-to-side {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  max-width: 40px;
+}
+
+.side-to-side.left {
+  left: 25px;
+}
+
+.side-to-side.right {
+  right: 25px;
+}
+
+.drones {
+  cursor: all-scroll
+}
+
+/* Activa la animación al hacer hover en la clase drones */
+.drones:hover .side-to-side.left {
+  animation: flyLeft 3s infinite alternate ease-in-out;
+}
+
+.drones:hover .side-to-side.right {
+  animation: flyRight 3s infinite alternate ease-in-out;
+}
+
+@keyframes flyLeft {
+  0% {
+    transform: translateY(-50%) translateX(0) rotate(10deg);
+  }
+
+  100% {
+    transform: translateY(-50%) translateX(350px) rotate(-10deg);
+  }
+}
+
+@keyframes flyRight {
+  0% {
+    transform: translateY(-50%) translateX(0) rotate(-10deg);
+  }
+
+  100% {
+    transform: translateY(-50%) translateX(-350px) rotate(10deg);
+  }
+}
+
+#loader {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#loader > img {
+  max-width: 400px;
+  max-height: 400px;
+}
+
+.none {
+  display: none !important;
+}
+
+.game-container {
+  text-align: center;
+}
+
+.title {
+  font-size: 2.2rem;
+  margin: 0;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #666666;
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-start {
+  background-color: #92C149;
+}
+
+.btn-rules {
+  background-color: #666666;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 600px) {
+  .title {
+    font-size: 1.5rem;
+  }
+  .side-to-side.left {
+    left: 5px;
+  }
+  .side-to-side.right {
+    right: 5px;
+  }
+}

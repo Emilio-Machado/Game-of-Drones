@@ -1,0 +1,73 @@
+<div *ngIf="gameData" class="game-detail-vs">
+  <label class="tooltip-label" [attr.data-games-won]="gameData.playerOne.gamesWon"> {{ gameData.playerOne.name }} </label>
+
+  <div class="counter-round"> <label>{{ gameData.playerOne.roundsWon }}</label> </div>
+
+  <label class="vs"> vs </label>
+
+  <div class="counter-round"> <label>{{ gameData.playerTwo.roundsWon }}</label> </div>
+
+  <label class="tooltip-label" [attr.data-games-won]="gameData.playerTwo.gamesWon"> {{ gameData.playerTwo.name }} </label>
+
+</div>
+
+<div *ngIf="gameData" class="game-detail-container">
+  <div class="columns">
+    <div class="current-round column" *ngIf="!gameData.winner" [class.hidden]="gameData.winner">
+      <h2>Ronda {{ gameData.rounds.length }}</h2>
+      <div class="player-move">
+        <label>Turno de: {{ gameData.rounds[gameData.rounds.length - 1].nextTurnPlayer.name }}</label>
+        <p for="move">Selecciona tu movimiento:</p>
+        <select id="move" [(ngModel)]="selectedMove">
+          <option [ngValue]="null" disabled selected>{{ gameData.rounds[gameData.rounds.length - 1].nextTurnPlayer.name }} juega:</option>
+          <option *ngFor="let move of gameData.moves" [ngValue]="move">{{ move.name }}</option>
+        </select>
+        <button id="send" (click)="submitMove()">Enviar</button>
+      </div>
+
+    </div>
+
+    <div class="score column" *ngIf="!gameData.winner" [class.hidden]="gameData.winner">
+      <h2>Puntaje</h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Ronda</th>
+              <th>Ganador</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let round of gameData.rounds; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td *ngIf="i + 1 < gameData.rounds.length">{{ round.winner?.name || 'Empate' }}</td>
+              <td *ngIf="i + 1 == gameData.rounds.length">{{ round.winner?.name || 'En juego...' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tarjeta de Ganador -->
+    <div class="winners column" *ngIf="gameData.winner" [class.full-width]="gameData.winner">
+      <h3>¡Tenemos un Ganador!</h3>
+      <p>¡{{ gameData.winner.name }} es el nuevo Emperador!</p>
+
+      <p *ngIf="gameData.winner.id == gameData.playerOne.id" class="msg-game-won"> Cantidad de juegos ganados: {{ gameData.playerOne.gamesWon }}</p>
+      <p *ngIf="gameData.winner.id == gameData.playerTwo.id" class="msg-game-won"> Cantidad de juegos ganados: {{ gameData.playerTwo.gamesWon }}</p>
+
+      <div class="btn-container hover-grow">
+        <button (click)="reinitiate()">Jugar de nuevo</button>
+      </div>
+
+      <div class="btn-container btn-change-moves-container hover-grow">
+        <button (click)="changeMoves()">Modificar movimientos</button>
+      </div>
+
+      <div class="btn-container btn-home-container hover-grow">
+        <a (click)="home()">Inicio</a>
+      </div>
+    </div>
+  </div>
+</div>

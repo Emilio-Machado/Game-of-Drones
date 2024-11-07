@@ -1,0 +1,34 @@
+
+.game-form {
+  width: auto;
+  max-width: 500px;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #92c149;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #7ea03d;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 600px) {
+  .game-form > h2 {
+    text-align: center;
+  }
+}
