@@ -4,6 +4,8 @@
 /tmp
 /out-tsc
 /bazel-out
+/Frontend/package-lock.json
+/Frontend/package.json
 
 # Node
 /node_modules
@@ -50,3 +52,4 @@ obj/
 *.user
 .vs/
 Logs/
+
