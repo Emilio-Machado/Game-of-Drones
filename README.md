@@ -15,7 +15,7 @@ Este es un proyecto completo de [ASP.NET Core](https://dotnet.microsoft.com/apps
 
 1.  Clona el repositorio:
     
-    `git clone https://github.com/usuario/Game-of-Drones.git` 
+    `git clone https://github.com/Emilio-Machado/Game-of-Drones.git` 
     
 2.  Configuración de `appsettings.json`:
     
