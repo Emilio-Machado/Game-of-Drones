@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Game_of_Drones.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
 using Serilog;
 using Game_of_Drones.DataAccess;
 using Game_of_Drones.DTOs;
+using Game_of_Drones.Security;
 
 namespace Game_of_Drones.Controllers;
 
@@ -20,21 +21,13 @@ public class RoundController : ControllerBase
     }
 
     [HttpPost("play-move")]
+    [Authorize]
     public async Task<IActionResult> PlayMove([FromBody] PlayMoveRequest request)
     {
         try
         {
-            if (string.IsNullOrEmpty(HttpContext.Request.Headers["Authorization"]))
-                return Unauthorized(new ApiResponse<string>(false, "No autorizado."));
-
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            var gameIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "GameId");
-
-            if (gameIdClaim == null)
+            if (!int.TryParse(User.FindFirst(GameClaims.GameId)?.Value, out var gameId))
                 return Unauthorized(new ApiResponse<string>(false, "Token inválido."));
-
-            var gameId = int.Parse(gameIdClaim.Value);
             var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == gameId);
 
             if (game == null)
@@ -80,7 +73,7 @@ public class RoundController : ControllerBase
                 var playerOneMove = await _context.Moves.FindAsync(currentRound.PlayerOneMoveId);
                 var playerTwoMove = await _context.Moves.FindAsync(currentRound.PlayerTwoMoveId);
 
-                if(playerOneMove != null && playerTwoMove != null)
+                if (playerOneMove != null && playerTwoMove != null)
                 {
                     if (playerOneMove.KillMoveId == playerTwoMove.Id)
                         currentRound.WinnerId = game.PlayerOneId;
@@ -116,7 +109,7 @@ public class RoundController : ControllerBase
                     var playerTwo = await _context.Players.FindAsync(game.PlayerTwoId);
 
                     await _context.SaveChangesAsync();
-                    return Ok(new ApiResponse<object>(true, "¡Tenemos un ganador!", new { Winner = $"¡{playerTwo!.Name} es el nuevo emperador!"}));
+                    return Ok(new ApiResponse<object>(true, "¡Tenemos un ganador!", new { Winner = $"¡{playerTwo!.Name} es el nuevo emperador!" }));
                 }
 
                 // Iniciar una nueva ronda

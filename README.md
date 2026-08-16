@@ -17,16 +17,13 @@ Este es un proyecto completo de [ASP.NET Core](https://dotnet.microsoft.com/apps
     
     `git clone https://github.com/Emilio-Machado/Game-of-Drones.git` 
     
-2.  Configuración de `appsettings.json`:
-    
--   El archivo `appsettings.json` ya incluye una configuración básica con un secreto JWT y una cadena de conexión para SQLite.
-    
+2.  No se requiere configurar secretos para ejecutar el proyecto localmente. En el entorno `Development`, la aplicación genera una clave JWT criptográficamente segura y temporal al iniciar.
 
-> ⚠️ **Nota de Seguridad**:
-> -   Para facilitar la prueba, la clave secreta JWT (`Jwt:Secret`) está en `appsettings.json`.
-> -   **Esto no es seguro para producción**. Para un entorno de producción:
->     -   Mueve `Jwt:Secret` a una variable de entorno (`JWT_SECRET`).
->     -   Modifica `Program.cs` para cargar el secreto desde las variables de entorno.
+> **Configuración segura**:
+> - La clave de desarrollo se mantiene únicamente en memoria y cambia con cada reinicio.
+> - Fuera de `Development`, la aplicación no inicia si no se configura `Jwt:Secret`.
+> - En variables de entorno, usa `Jwt__Secret` con una clave Base64 de al menos 256 bits.
+> - Las credenciales y claves reales nunca deben almacenarse en archivos versionados.
 
 
 ## Ejecución del Proyecto

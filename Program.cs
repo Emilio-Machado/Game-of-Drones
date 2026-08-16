@@ -1,11 +1,12 @@
 using Serilog;
 using Game_of_Drones.DataAccess;
+using Game_of_Drones.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración de Serilog
+// ConfiguraciÃ³n de Serilog
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/exception.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
     .CreateLogger();
@@ -14,6 +15,7 @@ builder.Host.UseSerilog(); // Configurar Serilog como el logger predeterminado
 
 // Agregar servicios
 builder.Services.AddControllers();
+builder.Services.AddGameJwtAuthentication(builder.Configuration, builder.Environment);
 
 builder.Services.AddDbContext<GameDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("GameDatabase")));
@@ -23,24 +25,29 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Aplicar migraciones y crear la base de datos automáticamente si no existe
+// Aplicar migraciones y crear la base de datos automÃ¡ticamente si no existe
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<GameDbContext>();
     dbContext.Database.Migrate();
 }
 
-// Configuración del pipeline HTTP
+// ConfiguraciÃ³n del pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
-// Sirve archivos estáticos desde "Frontend/Web/dist/web/browser"
+// Sirve archivos estÃ¡ticos desde "Frontend/Web/dist/web/browser"
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
@@ -48,7 +55,7 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = ""
 });
 
-// Middleware para manejar el enrutamiento de Angular y redirigir a index.html si no es un archivo estático o una API
+// Middleware para manejar el enrutamiento de Angular y redirigir a index.html si no es un archivo estÃ¡tico o una API
 app.Use(async (context, next) =>
 {
     await next();

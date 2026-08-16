@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Game_of_Drones.DataAccess;
 using Game_of_Drones.Models;
 using Microsoft.EntityFrameworkCore;
 using Game_of_Drones.DataAccess.Models;
 using Serilog;
 using Game_of_Drones.DTOs;
+using Game_of_Drones.Security;
 
 namespace Game_of_Drones.Controllers;
 
@@ -17,10 +15,10 @@ namespace Game_of_Drones.Controllers;
 public class GameController : ControllerBase
 {
     private readonly GameDbContext _context;
-    private readonly IConfiguration _configuration;
+    private readonly IJwtTokenService _jwtTokenService;
 
-    public GameController(GameDbContext context, IConfiguration configuration)
-        => (_context, _configuration) = (context, configuration);
+    public GameController(GameDbContext context, IJwtTokenService jwtTokenService)
+        => (_context, _jwtTokenService) = (context, jwtTokenService);
 
     [HttpPost("start")]
     public async Task<IActionResult> StartGame([FromBody] GameStartRequest request)
@@ -59,7 +57,7 @@ public class GameController : ControllerBase
             await _context.SaveChangesAsync();
 
             // Genera el token JWT
-            var token = GenerateJwtToken(newGame.Id);
+            var token = _jwtTokenService.CreateGameToken(newGame.Id);
 
             return Ok(new ApiResponse<string>(true, "Juego iniciado correctamente", token));
         }
@@ -71,22 +69,13 @@ public class GameController : ControllerBase
     }
 
     [HttpGet("details")]
+    [Authorize]
     public async Task<IActionResult> GetGameDetails()
     {
         try
         {
-            if (string.IsNullOrEmpty(Request.Headers.Authorization))
-                return Unauthorized(new ApiResponse<string>(false, "No autorizado."));
-
-            // Extrae el token y obtiene el GameId
-            var token = Request.Headers.Authorization.ToString().Replace("Bearer ", "");
-            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            var gameIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "GameId");
-
-            if (gameIdClaim == null)
+            if (!int.TryParse(User.FindFirst(GameClaims.GameId)?.Value, out var gameId))
                 return Unauthorized(new ApiResponse<string>(false, "Token inválido."));
-
-            var gameId = int.Parse(gameIdClaim.Value);
 
             // Obtiene el juego básico
             var game = await _context.Games
@@ -191,25 +180,6 @@ public class GameController : ControllerBase
         return player;
     }
 
-    private string GenerateJwtToken(int gameId)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var secret = _configuration["Jwt:Secret"] ?? throw new InvalidOperationException("Jwt:Secret is not configured.");
-        var key = Encoding.ASCII.GetBytes(secret);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim("GameId", gameId.ToString())
-            }),
-            Expires = DateTime.UtcNow.AddHours(24),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-    }
 }
 
 public class GameStartRequest
