@@ -4,12 +4,13 @@ Este es un proyecto completo de [ASP.NET Core](https://dotnet.microsoft.com/apps
 
 
 ## Requisitos
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (obligatorio)
-- [Node.js](https://nodejs.org/) – versión 18.19.1 o más reciente (solo si deseas modificar el frontend)
-- [Angular CLI 18](https://www.npmjs.com/package/@angular/cli/v/18.0.0) (solo si deseas modificar el frontend)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (obligatorio)
+- [Node.js](https://nodejs.org/) 20.11.1 o más reciente, con npm (obligatorio)
 
 
-⚠️ **Nota Importante**: El proyecto está diseñado para clonarse y ejecutarse directamente en Visual Studio sin pasos adicionales. La base de datos SQLite se configura automáticamente y las migraciones se aplican en el primer inicio. Además, se incluye una compilación del frontend en la carpeta `dist`, lo que permite ejecutar el proyecto sin necesidad de instalar ni compilar Angular.
+⚠️ **Nota Importante**: El proyecto está diseñado para clonarse y ejecutarse directamente desde Visual Studio. Al presionar **Iniciar**, MSBuild comprueba Node.js y npm, restaura las dependencias con `npm ci` cuando es necesario y compila Angular antes de iniciar ASP.NET Core. La base de datos SQLite se configura automáticamente y las migraciones se aplican en el primer inicio.
+
+La distribución compilada de Angular no se almacena en Git. Si Node.js o npm no están disponibles, la compilación se detiene con un mensaje que indica cómo resolver el requisito faltante.
 
 ## Configuración del Proyecto
 
@@ -23,6 +24,7 @@ Este es un proyecto completo de [ASP.NET Core](https://dotnet.microsoft.com/apps
 > - La clave de desarrollo se mantiene únicamente en memoria y cambia con cada reinicio.
 > - Fuera de `Development`, la aplicación no inicia si no se configura `Jwt:Secret`.
 > - En variables de entorno, usa `Jwt__Secret` con una clave Base64 de al menos 256 bits.
+> - En despliegues externos, configura `AllowedHosts` con los dominios permitidos, separados por punto y coma (por ejemplo, `app.example.com;api.example.com`).
 > - Las credenciales y claves reales nunca deben almacenarse en archivos versionados.
 
 
@@ -30,7 +32,7 @@ Este es un proyecto completo de [ASP.NET Core](https://dotnet.microsoft.com/apps
 
 ### Backend (.NET)
 
-Abre la solución en Visual Studio y presiona **Iniciar** para que el proyecto restaure automáticamente las dependencias, aplique las migraciones y configure la base de datos SQLite. La API estará disponible en 
+Abre la solución en Visual Studio y presiona **Iniciar**. El proyecto restaura las dependencias de .NET y Angular, compila ambos componentes, aplica las migraciones y configura la base de datos SQLite. La API y el frontend estarán disponibles en
 
 `http://localhost:1179`.
 
@@ -41,23 +43,14 @@ Alternativamente, puedes ejecutar el proyecto desde la línea de comandos:
 
 ### Frontend (Angular)
 
-⚠️ **Nota Importante**: El proyecto incluye una compilación del frontend en la carpeta `Frontend/Web/dist`, por lo que se sirve directamente sin necesidad de instalar ni compilar Angular.
+No se requiere ejecutar comandos manuales para iniciar el frontend. Cuando se inicia o compila el proyecto .NET:
 
-Si deseas modificar el frontend, sigue estos pasos:
+- `npm ci` se ejecuta en el primer build y cuando cambia `package.json` o `package-lock.json`.
+- `npm run build` genera `Frontend/Web/dist/web/browser` antes de iniciar ASP.NET Core.
+- Visual Studio considera los archivos fuente de Angular en su comprobación de proyecto actualizado, por lo que un cambio en el frontend provoca una nueva compilación al volver a presionar **Iniciar**.
+- `dotnet publish` incluye automáticamente la distribución Angular generada en el artefacto publicado.
 
-1.  Ve a la carpeta del frontend:
-    
-    `cd Frontend/Web` 
-    
-2.  Instala las dependencias:
-    
-    `npm install` 
-    
-3.  Compila el proyecto Angular:
-
-    `npm run build` 
-    
-> **Nota**: Esto generará los nuevos archivos en `dist/web`, que se servirán automáticamente junto con el backend.
+Angular CLI está incluido como dependencia local del proyecto; no es necesario instalarlo globalmente.
 
 
 ## Endpoints y Documentación de la API

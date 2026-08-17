@@ -85,7 +85,7 @@ public static class JwtAuthenticationExtensions
 
         if (signingKey.Length < 32)
         {
-            throw new InvalidOperationException("Jwt:Secret must contain at least 256 bits of entropy.");
+            throw new InvalidOperationException("Jwt:Secret must decode to at least 256 bits (32 bytes).");
         }
 
         return signingKey;
