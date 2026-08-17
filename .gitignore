@@ -4,11 +4,12 @@
 /tmp
 /out-tsc
 /bazel-out
-/Frontend/package-lock.json
-/Frontend/package.json
+/Frontend/Web/dist/
+/Frontend/Web/.angular/
 
 # Node
 /node_modules
+/Frontend/Web/node_modules/
 npm-debug.log
 yarn-error.log
 
