@@ -1,10 +1,10 @@
 # Game of Drones
 
-Aplicación full stack desarrollada originalmente como parte del proceso de selección que culminó en mi incorporación a MiFinanzas. Posteriormente actualicé el proyecto para reflejar prácticas actuales de desarrollo, seguridad y mantenimiento.
+Aplicación full stack desarrollada originalmente como parte de una evaluación técnica para una posición de Desarrollador Full Stack Senior. Posteriormente actualicé el proyecto para reflejar prácticas actuales de desarrollo, seguridad y mantenimiento.
 
 El sistema implementa un juego por turnos para dos jugadores en el que gana quien obtiene tres rondas. Además de las reglas iniciales de piedra, papel o tijera, permite crear movimientos y modificar en tiempo de ejecución qué movimiento vence a cuál.
 
-Este es un proyecto personal de portfolio. No forma parte de los sistemas productivos de MiFinanzas ni constituye una publicación oficial de la empresa.
+Este es un proyecto personal de portfolio y no forma parte de ningún sistema productivo.
 
 ## Vista previa
 
@@ -112,4 +112,4 @@ La autenticación valida la firma, el algoritmo, el emisor, la audiencia y la ex
 
 ## Uso del repositorio
 
-El código se publica como proyecto de portfolio y muestra técnica. Su inclusión en este repositorio no implica respaldo, mantenimiento ni aprobación oficial por parte de MiFinanzas.
+El código se publica como proyecto de portfolio y muestra técnica.
