@@ -37,6 +37,7 @@ main {
   top: 40%;
   transform: translateY(-50%);
   max-width: 40px;
+  transition: opacity 0.25s ease, filter 0.25s ease;
 }
 
 .side-to-side.left {
@@ -51,13 +52,27 @@ main {
   cursor: all-scroll
 }
 
-/* Activa la animación al hacer hover en la clase drones */
-.drones:hover .side-to-side.left {
+/* En la pantalla inicial vuelan ambos; en partida vuela el dron del turno activo. */
+.drones:hover .side-to-side.left,
+.drones.always-flying .side-to-side.left,
+.drones.player-one-turn .side-to-side.left {
   animation: flyLeft 3s infinite alternate ease-in-out;
 }
 
-.drones:hover .side-to-side.right {
+.drones:hover .side-to-side.right,
+.drones.always-flying .side-to-side.right,
+.drones.player-two-turn .side-to-side.right {
   animation: flyRight 3s infinite alternate ease-in-out;
+}
+
+.drones.player-one-turn:not(:hover) .side-to-side.right,
+.drones.player-two-turn:not(:hover) .side-to-side.left {
+  opacity: 0.45;
+}
+
+.drones.player-one-turn .side-to-side.left,
+.drones.player-two-turn .side-to-side.right {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.85));
 }
 
 @keyframes flyLeft {

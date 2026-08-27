@@ -45,7 +45,7 @@
 		</Exec>
 		<Error
 			Condition="'$(NodeExitCode)' != '0'"
-			Text="Node.js is required to build the Angular frontend. Install Node.js 20.11.1 or newer, restart Visual Studio, and try again." />
+			Text="Node.js is required to build the Angular frontend. Install a version supported by Angular 22 (22.22.3+, 24.15.0+, or 26+), restart Visual Studio, and try again." />
 
 		<Exec Command="npm --version" IgnoreExitCode="true" StandardOutputImportance="Low" StandardErrorImportance="Low">
 			<Output TaskParameter="ExitCode" PropertyName="NpmExitCode" />

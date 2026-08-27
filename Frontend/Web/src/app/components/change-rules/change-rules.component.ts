@@ -1,22 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { GameService } from '../../services/game.service';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-change-rules',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
-  templateUrl: './change-rules.component.html',
-  styleUrls: ['./change-rules.component.css']
+    selector: 'app-change-rules',
+    imports: [FormsModule],
+    templateUrl: './change-rules.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrls: ['./change-rules.component.css']
 })
 export class ChangeRules implements OnInit {
   moves: any[] = [];
   newMoveName = '';
   newMoveKills = '';
 
-  constructor(private gameService: GameService, private toastr: ToastrService) { }
+  constructor(private gameService: GameService, private notifications: NotificationService) { }
 
   ngOnInit() {
     this.loadMoves();
@@ -28,7 +28,7 @@ export class ChangeRules implements OnInit {
         this.moves = response.data;
       },
       error: (error) => {
-        this.toastr.error('Error al cargar movimientos', 'Error');
+        this.notifications.error('Error al cargar movimientos', 'Error');
         console.error('Error al cargar movimientos:', error);
       }
     });
@@ -45,15 +45,15 @@ export class ChangeRules implements OnInit {
 
       this.gameService.deleteMove(moveId).subscribe({
         next: () => {
-          this.toastr.success(`Movimiento "${moveToDelete}" eliminado.`);
+          this.notifications.success(`Movimiento "${moveToDelete}" eliminado.`);
         },
         error: (error) => {
-          this.toastr.error(`Error al eliminar el movimiento "${moveToDelete}"`, 'Error');
+          this.notifications.error(`Error al eliminar el movimiento "${moveToDelete}"`, 'Error');
           console.error(`Error al eliminar el movimiento "${moveToDelete}":`, error);
         }
       });
     } else {
-      this.toastr.warning('Deben existir almenos 3 movimientos');
+      this.notifications.warning('Deben existir almenos 3 movimientos');
     }
   }
 
@@ -63,18 +63,18 @@ export class ChangeRules implements OnInit {
 
       this.gameService.addMove(newMove).subscribe({
         next: () => {
-          this.toastr.success('Movimiento agregado');
+          this.notifications.success('Movimiento agregado');
           this.newMoveName = '';
           this.newMoveKills = '';
           this.loadMoves();
         },
         error: (error) => {
-          this.toastr.error('Error al agregar el movimiento', 'Error');
+          this.notifications.error('Error al agregar el movimiento', 'Error');
           console.error('Error al agregar el movimiento:', error);
         }
       });
     } else {
-      this.toastr.warning('Debes completar los datos');
+      this.notifications.warning('Debes completar los datos');
     }
   }
 
@@ -83,10 +83,10 @@ export class ChangeRules implements OnInit {
     const killMoveName = this.moves.find(option => option.id == move.killMoveId)?.name;
     this.gameService.updateMove(move).subscribe({
       next: () => {
-        this.toastr.success(`Ahora ${moveName} mata a ${killMoveName}.`, `Movimiento actualizado`);
+        this.notifications.success(`Ahora ${moveName} mata a ${killMoveName}.`, `Movimiento actualizado`);
       },
       error: (error) => {
-        this.toastr.error(`Error al actualizar el movimiento "${moveName}"`, 'Error');
+        this.notifications.error(`Error al actualizar el movimiento "${moveName}"`, 'Error');
         console.error(`Error al actualizar el movimiento "${moveName}":`, error);
       }
     });
