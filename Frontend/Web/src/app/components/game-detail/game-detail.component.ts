@@ -1,28 +1,34 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { GameService } from '../../services/game.service';
-import { ToastrService } from 'ngx-toastr';
+import { NotificationService } from '../../services/notification.service';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { GlobalService } from '../../services/global.service';
 import { Observer } from 'rxjs';
 import { Router } from '@angular/router';
+import { DroneAnimationService } from '../../services/drone-animation.service';
 
 @Component({
-  selector: 'app-game-detail',
-  templateUrl: './game-detail.component.html',
-  styleUrls: ['./game-detail.component.css'],
-  standalone: true,
-  imports: [FormsModule, CommonModule]
+    selector: 'app-game-detail',
+    templateUrl: './game-detail.component.html',
+    styleUrls: ['./game-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule]
 })
-export class GameDetail implements OnInit {
+export class GameDetail implements OnInit, OnDestroy {
   gameData: any = null;
   selectedMove: any = null;
 
   constructor(private globalService: GlobalService, private gameService: GameService,
-    private toastr: ToastrService, private router: Router, private cdr: ChangeDetectorRef) { }
+    private notifications: NotificationService, private router: Router, private cdr: ChangeDetectorRef,
+    private droneAnimation: DroneAnimationService) { }
 
   ngOnInit() {
     this.loadGameDetails(false);
+  }
+
+  ngOnDestroy(): void {
+    this.droneAnimation.clear();
   }
 
   loadGameDetails(showTurn = true) {
@@ -32,13 +38,23 @@ export class GameDetail implements OnInit {
         this.cdr.detectChanges();
         const nextTurnPlayer = this.gameData.rounds[this.gameData.rounds.length - 1]?.nextTurnPlayer;
 
+        if (nextTurnPlayer && !this.gameData.winner) {
+          this.droneAnimation.setTurn(
+            nextTurnPlayer.id,
+            this.gameData.playerOne.id,
+            this.gameData.playerTwo.id
+          );
+        } else {
+          this.droneAnimation.clear();
+        }
+
         if (nextTurnPlayer && showTurn) {
-          this.toastr.success('Turno de ' + nextTurnPlayer.name, '¡Movimiento registrado!');
+          this.notifications.success('Turno de ' + nextTurnPlayer.name, '¡Movimiento registrado!');
           return;
         }
       },
       error: (error) => {
-        this.toastr.error('Error al obtener los detalles del juego');
+        this.notifications.error('Error al obtener los detalles del juego');
         console.error('Error en la solicitud:', error);
       }
     });
@@ -49,12 +65,12 @@ export class GameDetail implements OnInit {
     const nextTurnPlayer = this.gameData.rounds[this.gameData.rounds.length - 1]?.nextTurnPlayer;
 
     if (!nextTurnPlayer) {
-      this.toastr.warning('No se ha determinado el siguiente turno');
+      this.notifications.warning('No se ha determinado el siguiente turno');
       return;
     }
 
     if (!this.selectedMove) {
-      this.toastr.warning('Por favor selecciona un movimiento', nextTurnPlayer.name);
+      this.notifications.warning('Por favor selecciona un movimiento', nextTurnPlayer.name);
       return;
     }
 
@@ -65,7 +81,7 @@ export class GameDetail implements OnInit {
         this.globalService.loading(false);
         if (response.success) {
           if (response.data && response.data.winner) {
-            this.toastr.success(response.data.winner, '¡Tenemos un ganador!');
+            this.notifications.success(response.data.winner, '¡Tenemos un ganador!');
             this.globalService.launchConfetti();
           }
           this.loadGameDetails();
@@ -74,7 +90,7 @@ export class GameDetail implements OnInit {
       },
       error: (error) => {
         this.globalService.loading(false);
-        this.toastr.error('Error al registrar el movimiento');
+        this.notifications.error('Error al registrar el movimiento');
         console.error('Error en la solicitud:', error);
       }
     });
@@ -88,17 +104,17 @@ export class GameDetail implements OnInit {
           // Guarda el nuevo token en localStorage
           this.gameService.saveToken(response.data);
           this.loadGameDetails(false);
-          this.toastr.success('Turno de ' + this.gameData.playerOne.name.trim(), 'Juego reiniciado');
+          this.notifications.success('Turno de ' + this.gameData.playerOne.name.trim(), 'Juego reiniciado');
         } else {
-          this.toastr.error(`Error al reiniciado el juego: ${response.message}`);
+          this.notifications.error(`Error al reiniciado el juego: ${response.message}`);
         }
       },
       error: (response) => {
         console.log(response.error)
         if (response.error && response.error.message) {
-          this.toastr.error(response.error.message);
+          this.notifications.error(response.error.message);
         } else {
-          this.toastr.error('Error en la solicitud. Inténtalo de nuevo.');
+          this.notifications.error('Error en la solicitud. Inténtalo de nuevo.');
         }
         this.globalService.loading(false);
       },
